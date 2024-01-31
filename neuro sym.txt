@@ -1,0 +1,304 @@
+ABSTRACT
+The earliest diagnosis of brain tumors is essential for effective treatment and better patient outcomes, 
+as they provide a considerable health danger. In recent years, the convergence of neuroscience and 
+artificial intelligence (AI) has opened the door to novel techniques to medical image analysis.
+This work presents a comprehensive exploration of Neuro-Symbolic AI for brain tumor detection, a 
+pioneering fusion of deep learning and symbolic reasoning. Three distinct techniques are investigated: 
+CNN-based model applied directly to brain tumor image datasets, hybrid approach employing a CNN 
+for feature extraction followed by a symbolic layer for interpretation (CNN → Symbolic), and hybrid 
+model with a symbolic reasoning layer guiding feature extraction by a CNN (Symbolic → CNN). The 
+study aims to elucidate the trade-offs and synergies between these techniques, assessing their 
+performance in terms of accuracy, interpretability, and adaptability. Results provide valuable insights 
+into the potential of Neuro-Symbolic AI in advancing brain tumor detection systems, emphasizing the 
+need for a holistic understanding of deep learning and symbolic reasoning integration in 
+medical image analysis.
+INTRODUCTION
+Neuro-Symbolic AI represents a synergy of neural networks and symbolic reasoning, aims to bridge 
+the gap between these two powerful approaches. It integrates symbolic processing and logical 
+reasoning with deep learning's capacity for pattern recognition. By contrasting several methods within 
+Neuro-Symbolic AI, such as direct CNN application and hybrid models, this paper aims to clarify the 
+complex conflicts and benefits within this developing field.
+The timely detection of brain tumors is essential for successful treatment and better patient outcomes. 
+The Br35H Brain Tumor Detection 2020 dataset is used for medical image analysis. It includes 1500 
+Brain MRI pictures (in the "Yes" folder) that show tumors and an equal number of images (in the "No" 
+folder) that show no tumors. This dataset offers a balanced basis for training and testing AI models in 
+the crucial field of brain tumor identification.
+The diversity of the dataset is what makes it significant; it provides an extensive collection of brain 
+pictures that may be used to construct algorithms that can differentiate between tumorous and nontumorous states. This balanced representation promotes the development of precise and reliable 
+diagnostic tools by guaranteeing the models' dependability in a variety of settings.
+Within the domain of Neuro-Symbolic AI applied to brain tumor detection, diverse algorithms are 
+used. The exploration involves three key techniques:
+1. Direct CNN Application: In this technique we applying a Convolutional Neural Network (CNN) 
+directly to the brain tumor image datasets. CNNs excel in pattern recognition tasks, making them wellsuited for image-related applications.
+2. Hybrid Approach (CNN → Symbolic Reasoning): A hybrid model is introduced, combining a CNN 
+for feature extraction with a symbolic reasoning layer for interpretation. This approach capitalizes on 
+the strengths of both neural networks and symbolic reasoning, providing a nuanced approach to image 
+analysis.
+3. Hybrid Approach (Symbolic Reasoning → CNN): Another hybrid model is explored, where a 
+symbolic reasoning layer guides the feature extraction process performed by a CNN. Symbolic 
+reasoning contributes to the interpretation of features extracted by the neural network, creating a 
+symbiotic relationship between the two paradigms.
+The objective of this paper is to discover how Neuro-Symbolic AI might improve brain tumor 
+diagnosis, with possible consequences for the medical image analysis community as a whole.
+ARCHITECTURE DIAGRAM 
+Figure -1: Architecture of Convolutional Neural Network
+Figure-2: Architecture of Hybrid CNN-Symbolic Model (CNN → Symbolic)
+Figure-3: Architecture of Hybrid Symbolic-CNN Model (Symbolic → CNN)
+METHODOLOGY
+A: Dataset Description
+The Br35H :: Brain Tumour Detection 2020 dataset is used which is accessible online in Kaggle. The 
+dataset's data values are pre-processed before being subjected to the feature selection and classification 
+processes. The dataset includes 3000 MRI images of patients with 1500 labelled as YES and 1500 
+labelled as NO tumour. 
+The data set was divided into two subsets, with 80% of the data going to the training set and 20% to 
+the validation set, before models were built.
+Figure-4: Sample Brain MRI Images
+B: Formulation of the problem and proposed solution
+The problem addressed in this study is the early detection of brain tumors through medical image 
+analysis. Timely identification of brain tumors is critical for effective treatment and improved patient 
+outcomes. The complexity lies in the variability of brain images and the need for accurate 
+differentiation between tumorous and non-tumorous conditions.
+Proposed Solution:
+The study explores Neuro-Symbolic AI as a promising approach to bridge the gap between neural 
+networks and symbolic reasoning in the context of brain tumor detection. Three key techniques are 
+investigated:
+1. Direct CNN Application:
+ - Utilizes Convolutional Neural Network (CNN) directly on the brain tumor image datasets.
+ - Leverages CNN's pattern recognition capabilities for image-related tasks.
+2. Hybrid Approach (CNN → Symbolic Reasoning):
+ - Introduces a hybrid model combining a CNN for feature extraction and a symbolic reasoning layer 
+for interpretation.
+ - Capitalizes on the strengths of both neural networks and symbolic reasoning for nuanced image 
+analysis.
+3. Hybrid Approach (Symbolic Reasoning → CNN):
+ - Explores another hybrid model where a symbolic reasoning layer guides the feature extraction 
+process performed by a CNN.
+ - Symbolic reasoning contributes to the interpretation of features extracted by the neural network, 
+creating a symbiotic relationship.
+Figure-5 :Flowchart of the project
+To understand these hybrid model lets understand how individually CNN model and symbolic 
+reasoning model works.
+Technique 1: CNN on Brain Tumor Image Data
+A Convolutional Neural Network (CNN) is a specialized type of neural network designed for 
+processing and analyzing visual data, particularly images. It comprises layers such as convolutional 
+layers, pooling layers, and fully connected layers. The convolutional layers use filters to extract 
+features from the input image through convolutions, capturing hierarchical patterns. Pooling layers 
+reduce spatial dimensions, emphasizing important information. Fully connected layers integrate 
+extracted features for classification. CNNs excel in tasks like image recognition due to their ability to 
+automatically learn hierarchical representations, enabling robust feature extraction and pattern 
+recognition in complex visual data.
+Convolution is represented by * sign, Input image represented as X and a filter represented with f.
+Z = X * f
+Dimension of image = (n, n)
+Dimension of filter = (f,f)
+Dimension of output will be ((n-f+1), (n-f+1))
+convolution layer has extracted some valuable features from the data. These features are sent to the 
+fully connected layer that generates the final results. Fully connected layer can only work with 1D 
+data. Hence, the values generated from the previous operation are first converted into a 1D format.
+All of these individual values are treated as separate features that represent the image. The fully 
+connected layer performs two operations on the incoming data – a linear transformation and a nonlinear transformation. The equation for linear transformation is:
+Z = WT.X + b
+An additional component in the network which adds non-linearity to the data is called the activation 
+function. We will be working on a binary classification problem and will use the Sigmoid activation 
+function. The range of a Sigmoid function is between 0 and 1.
+f(x) = 1/(1+e^-x)
+A generic equation for updating the parameter values:
+new_parameter = old_parameter - (learning_rate * gradient_of_parameter)
+Since the error is not directly dependent on the weight matrix, we will use the concept of chain rule to 
+find this value. The computation graph shown below will help us define ∂E/∂W:
+∂E/∂W = ∂E/∂O . ∂O/∂Z2. ∂z/∂W
+1. Change in error with respect to output
+Suppose the actual values for the data are denoted as y’ and the predicted output is represented as O. 
+Then the error would be given by this equation:
+E = (y' - O)2
+/2
+If we differentiate the error with respect to the output, we will get the following equation:
+∂E/∂O = -(y'-O)
+2. Change in output with respect to Z2 (linear transformation output)
+To find the derivative of output O with respect to Z2, we must first define O in terms of Z2. Thus, 
+∂O/∂Z2 is effectively the derivative of Sigmoid. 
+f'(x) = (1+e-x
+)
+-1
+[1-(1+e-x
+)
+-1
+]
+f'(x) = sigmoid(x)(1-sigmoid(x))
+∂O/∂Z2 = (O)(1-O)
+3. Change in Z2 with respect to W (Weights)
+The value Z2 is the result of the linear transformation process. 
+Z2 = WT.A1 + b
+On differentiating Z2 with respect to W, we will get the value A1 itself:
+∂Z2/∂W = A1
+The chain rule to find the change in error with respect to weights:
+∂E/∂W = ∂E/∂O . ∂O/∂Z2. ∂Z2/∂W
+∂E/∂W = -(y'-o) . sigmoid'. A1
+The shape of ∂E/∂W will be the same as the weight matrix W. We can update the values in the weight 
+matrix using the following equation:
+W_new = W_old - lr*∂E/∂W
+Figure-6: Backward propagation(convolution Layer)
+From the above graph we can define the derivative ∂E/∂f as:
+ ∂E/∂f = ∂E/∂O.∂O/∂Z2.∂Z2/∂A1 .∂A1/∂Z1.∂Z1/∂f
+1. Change in Z2 with respect to A1
+To find the value for ∂Z2/∂A1 , we need to have the equation for Z2 in terms of A1:
+Z2 = WT.A1 + b
+On differentiating the above equation with respect to A1, we get WT as the result:
+∂Z2/∂A1 = WT
+2. Change in A1 with respect to Z1
+The next value that we need to determine is ∂A1/∂Z1. Have a look at the equation of A1
+ A1 = sigmoid(Z1)
+This is simply the Sigmoid function. The derivative of Sigmoid would be:
+ ∂A1/∂Z1 = (A1)(1-A1)
+3. Change in Z1 with respect to filter f
+Finally, we need the value for ∂Z1/∂f. Here’s the equation for Z1
+ Z1 = X * f
+Differentiating Z with respect to X will simply give us X:
+ ∂Z1/∂f = X
+Now that we have all the required values, let’s find the overall change in error with respect to the filter:
+ ∂E/∂f = ∂E/∂O.∂O/∂Z2.∂Z2/∂A1 .∂A1/∂Z1 * ∂Z1/∂f
+Notice that in the equation above, the value (∂E/∂O.∂O/∂Z2.∂Z2/∂A1 .∂A1/∂Z) is convolved with 
+∂Z1/∂f instead of using a simple dot product.
+This is repeated in the backward propagation process. Once we have the value for ∂E/∂f, we will use 
+this value to update the original filter value:
+f = f - lr*(∂E/∂f)
+Figure-7: Convolutional Neural Network
+Technique 2: Hybrid CNN-Symbolic Model (CNN → Symbolic)
+1.Data Preprocessing:
+• XPreprocessed = Preprocess(X)
+2. Model Architecture:
+• CNN parameters: Wcnn,bcnn
+• Symbolic Parameters: Wsymbolic , bSymbolic
+• Ycnn = CNN(XPreprocessed, Wcnn,bcnn)
+• YSymbolic = Symbolic(Ycnn , Wsymbolic , bSymbolic)
+3. Training:
+• Joint loss function :LHybrid( Ycnn,YSymbolic,ytrue)
+• Update parameters using joint backpropagation: 
+θHybrid = θHybrid - α∇LHybrid
+4. Evaluation: 
+• Ypred = Predict(Xtest , θHybrid)
+• Metrics : Accuracy,Interpretability
+Technique 3: Hybrid Symbolic-CNN Model (Symbolic → CNN)
+1. Data preprocessing:
+• XPreprocessed = Preprocess(X)
+2. Model Architecture:
+• Symbolic Parameters: Wsymbolic , bSymbolic
+• CNN parameters: Wcnn,bcnn
+• Ycnn = CNN(YSymbolic , Wcnn,bcnn)
+• YSymbolic = Symbolic(XPreprocessed, , Wsymbolic , bSymbolic)
+3. Training:
+• Joint loss function :LHybrid( Ycnn,YSymbolic,ytrue)
+• Update parameters using joint backpropagation : 
+θHybrid = θHybrid - α∇LHybrid
+4. Evaluation: 
+• �!"#$ = �������(�%#&' , �)*+",$ )
+• Metrics : Accuracy, Impact of Symbolic Reasoning on Features
+Implementation
+Technique 1: CNN on Brain Tumor Image Data
+Data Loading and Pre-processing:
+• Images are loaded with labels “Yes” and “No” from the local directory
+• Images are read and resized into (128, 128), and Labels (0 for 'no' and 1 for 'yes') are assigned 
+to each image.
+• Data is split into training and testing sets using the train_test_split function.
+Neural Network Model:
+• A sequential CNN model is constructed using Keras with Conv2D, MaxPooling2D, Flatten, 
+Dense, Dropout layers and ReLU activation.
+• The model is compiled with the Adam optimizer and binary cross-entropy loss for binary 
+classification.
+• The model is trained on the training set using 10 epochs.
+Model Evaluation:
+• The trained model is evaluated on the test set.
+• Performance metrics such as test loss and accuracy are printed.
+• Predictions are made on the test data, and precision, recall, and confusion matrix are calculated.
+Technique 2: Hybrid CNN-Symbolic Model (CNN → Symbolic)
+Data Loading and Pre-processing:
+• Tumor images are loaded from directories 'no' and 'yes'.
+• Images are resized into (128, 128) using libraries.
+• Labels (0 for 'no' and 1 for 'yes') are assigned to each image.
+• The dataset is split into training and testing sets using the train_test_split function.
+Neural Network Model :
+• A Convolutional Neural Network (CNN) model is constructed using the Keras Sequential API.
+• The architecture involves a convolutional layer with 32 filters of size (3, 3) and ReLU 
+activation.
+• MaxPooling2D layers with a pool size of (2, 2) are applied after each convolutional layer, 
+reducing spatial dimensions while preserving essential features.
+Symbolic Reasoning Layer:
+• The model commences with a SymbolicReasoningLayer, incorporating symbolic reasoning 
+into the feature extraction process.
+Model Compilation and Training:
+• The model is compiled using the Adam optimizer and binary cross-entropy loss.
+• Training is performed for 10 epochs on the training set with batch size 24.
+• Training progress, including loss and accuracy, is printed for each epoch.
+Model Evaluation:
+• The trained model is evaluated on the test set.
+• Test loss and accuracy are printed.
+Symbolic Reasoning Weights and Biases:
+• Weights and biases of the SymbolicReasoningLayer are printed if available.
+Performance Metrics:
+• Precision, recall, and confusion matrix are calculated using sklearn.metrics based on the model 
+predictions on the test set.
+Technique 3: Hybrid Model with Symbolic Layer and CNN (Symbolic → CNN)
+Symbolic and CNN:
+Custom Symbolic Reasoning Layer:
+• A symbolic reasoning layer is defined as a part of the model, introducing symbolic reasoning 
+into the architecture.
+• The layer includes weights and biases, initialized and trainable during model construction.
+CNN with Symbolic Reasoning Model:
+• A Convolutional Neural Network (CNN) model is created using the Keras Sequential API.
+• The model starts with a convolutional layer with 32 filters, followed by max-pooling.
+• Another convolutional layer with 64 filters is added, accompanied by further max-pooling.
+• The architecture also includes flattening, a secondary symbolic reasoning layer with linear 
+activation, and a dense layer with sigmoid activation for binary classification.
+Dataset Loading and Pre-processing:
+• Image datasets ('no' and 'yes' tumor images) are loaded and resized using OpenCV and PIL.
+• The dataset is split into training and testing sets, with pixel values normalized to a range of 0 
+to 1.
+Model Compilation and Training:
+• The model is compiled with Adam optimizer and binary cross-entropy loss.
+• Training is performed for 10 epochs using the training set.
+Model Evaluation and Metrics:
+• The trained model is evaluated on the test set, and test loss and accuracy are reported.
+• Predictions are made on the test data, and performance metrics including precision, recall, and 
+confusion matrix are calculated.
+Symbolic Reasoning Layer Parameters:
+• Weights and biases of the symbolic reasoning layer are printed to provide insights into the 
+learned symbolic representations.
+Figure-8 : Performance Growth Over Training Epochs for Different Models
+Results
+Table 1:Comparision of different models
+Model Accuracy Loss Function Precision Recall
+Convolutional Neural 
+Network
+0.9750 0.1146 0.9828 0.9662
+Hybrid CNN-Symbolic 
+Model (CNN→ 
+Symbolic)
+0.9850 0.1031 0.9844 0.9805
+Hybrid Symbolic-CNN 
+Model (Symbolic→ 
+CNN)
+0.9750 0.1128 0.9690 0.9728
+0
+0.2
+0.4
+0.6
+0.8
+1
+1.2
+Epcohs - 1 Epcohs - 2 Epcohs - 3 Epcohs - 4 Epcohs - 5 Epcohs - 6 Epcohs - 7 Epcohs - 8 Epcohs - 9 Epcohs -
+10
+CNN Hybrid CNN-Symbolic Model (CNN → Symbolic)
+Hybrid Symbolic-CNN Model (Symbolic → CNN)
+In terms of accuracy, the Hybrid CNN-Symbolic Model surpass both the standalone CNN and the 
+Hybrid Symbolic-CNN Model, with a maximum accuracy of 98.50%. The Hybrid CNN-Symbolic 
+Model benefits from the features of both CNN-based feature extraction and symbolic reasoning, 
+resulting in higher accuracy. Symbolic reasoning may help the model understand abstract relationships 
+in the data.
+The Hybrid Symbolic-CNN Model, which includes symbolic reasoning prior to the CNN layers, also 
+performs well, with an accuracy of 97.50%. However, it remains behind the Hybrid CNN-Symbolic 
+Model, implying that the order of layers influences the model's ability to learn and generalize as seen 
+by the disparities between the two hybrid models. The Hybrid CNN-Symbolic Model, which employs 
+symbolic reasoning following CNN layers, appears to capture more significant characteristics for 
+accurate categorization.
+High precision and recall values across all models imply strong performance in accurately detecting 
+positive cases (tumors) while avoiding false positives and false negatives.
