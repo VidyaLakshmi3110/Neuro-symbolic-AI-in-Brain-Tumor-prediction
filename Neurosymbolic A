@@ -1,0 +1,357 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import cv2
+import os
+import tensorflow as tf
+from PIL import Image
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.utils import normalize, to_categorical
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Activation, Dropout, Flatten, Dense 
+from sklearn.metrics import confusion_matrix , classification_report,ConfusionMatrixDisplay
+from tensorflow.keras import models,layers
+#CNN
+
+import os
+import cv2
+import numpy as np
+from PIL import Image
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix
+from tensorflow.keras import models, layers
+
+# Set your image directory
+image_dir = 'C:\Users\91998\Downloads\archive (6)'
+
+# Load image file names for 'no' and 'yes' classes
+no_tumor_images = os.listdir(image_dir + '/no')
+yes_tumor_images = os.listdir(image_dir + '/yes')
+
+dataset = []
+label = []
+
+# Load 'no' class images
+for i, image_name in enumerate(no_tumor_images):
+    if image_name.split('.')[1] == 'jpg':
+        image = cv2.imread(image_dir + 'no/' + image_name)
+        image = Image.fromarray(image, 'RGB')
+        image = image.resize((128, 128))
+        dataset.append(np.array(image))
+        label.append(0)
+
+# Load 'yes' class images
+for i, image_name in enumerate(yes_tumor_images):
+    if image_name.split('.')[1] == 'jpg':
+        image = cv2.imread(image_dir + 'yes/' + image_name)
+        image = Image.fromarray(image, 'RGB')
+        image = image.resize((128, 128))
+        dataset.append(np.array(image))
+        label.append(1)
+
+# Convert lists to NumPy arrays and normalize pixel values
+dataset = np.array(dataset) / 255.0
+label = np.array(label)
+
+# Split data into training and testing sets
+x_train, x_test, y_train, y_test = train_test_split(dataset, label, test_size=.2)
+
+# Build the CNN model
+cnn = models.Sequential([
+    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(128, 128, 3)),
+    layers.MaxPooling2D((2, 2)),
+    layers.Flatten(),
+    layers.Dense(64, activation='relu'),
+    layers.Dropout(0.5),
+    layers.Dense(1, activation='sigmoid')
+])
+
+# Compile the model
+cnn.compile(optimizer='adam',
+            loss='binary_crossentropy',
+            metrics=['accuracy'])
+
+# Train the model
+cnn.fit(x_train, y_train, epochs=10)
+
+# Evaluate the model
+loss, accuracy = cnn.evaluate(x_test, y_test)
+print(f'Test Loss: {loss:.4f}')
+print(f'Test Accuracy: {accuracy:.4f}')
+
+# Predict on test data
+y_pred = cnn.predict(x_test)
+y_pred_classes = np.round(y_pred)
+
+# Calculate Precision, Recall, and Confusion Matrix
+precision = precision_score(y_test, y_pred_classes)
+recall = recall_score(y_test, y_pred_classes)
+conf_matrix = confusion_matrix(y_test, y_pred_classes)
+
+print(f'Precision: {precision:.4f}')
+print(f'Recall: {recall:.4f}')
+print('Confusion Matrix:')
+print(conf_matrix)
+#CNN and Symbolic
+
+
+import os
+import cv2
+import numpy as np
+from PIL import Image
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix
+import tensorflow as tf
+from tensorflow.keras import layers
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Activation
+import matplotlib.pyplot as plt
+
+# Set your image directory
+image_dir = 'C:\Users\91998\Downloads\archive (6)'
+no_tumor_images = os.listdir(os.path.join(image_dir, 'no'))
+yes_tumor_images = os.listdir(os.path.join(image_dir, 'yes'))
+
+print('The length of no tumor images is', len(no_tumor_images))
+print('The length of yes tumor images is', len(yes_tumor_images))
+
+dataset = []
+label = []
+
+# Load 'no' tumor images
+for image_name in no_tumor_images:
+    if image_name.split('.')[-1] == 'jpg':
+        image_path = os.path.join(image_dir, 'no', image_name)
+        image = cv2.imread(image_path)
+        image = Image.fromarray(image, 'RGB')
+        image = image.resize((128, 128))
+        dataset.append(np.array(image))
+        label.append(0)
+
+# Load 'yes' tumor images
+for image_name in yes_tumor_images:
+    if image_name.split('.')[-1] == 'jpg':
+        image_path = os.path.join(image_dir, 'yes', image_name)
+        image = cv2.imread(image_path)
+        image = Image.fromarray(image, 'RGB')
+        image = image.resize((128, 128))
+        dataset.append(np.array(image))
+        label.append(1)
+
+dataset = np.array(dataset)
+label = np.array(label)
+
+# Split the dataset
+x_train, x_test, y_train, y_test = train_test_split(dataset, label, test_size=0.2, random_state=0)
+
+# Normalize pixel values to be between 0 and 1
+x_train = x_train / 255.0
+x_test = x_test / 255.0
+
+# Define a custom symbolic reasoning layer
+class SymbolicReasoningLayer(layers.Layer):
+    def __init__(self, num_classes):
+        super(SymbolicReasoningLayer, self).__init__()
+        self.num_classes = num_classes
+
+    def build(self, input_shape):
+        # Define your symbolic reasoning weights and biases
+        self.weights_symbolic = self.add_weight(shape=(input_shape[-1], self.num_classes),
+                                                initializer='random_normal',
+                                                trainable=True,
+                                                name='weights_symbolic')
+        self.bias_symbolic = self.add_weight(shape=(self.num_classes,),
+                                             initializer='zeros',
+                                             trainable=True,
+                                             name='bias_symbolic')
+
+    def call(self, inputs):
+        # Perform symbolic reasoning
+        reasoning_output = tf.matmul(inputs, self.weights_symbolic) + self.bias_symbolic
+        return reasoning_output
+
+# Create a CNN model with symbolic reasoning
+model = Sequential([
+    SymbolicReasoningLayer(64),
+    Conv2D(32, (3, 3), activation='relu', input_shape=(128, 128, 3)),
+    MaxPooling2D((2, 2)),
+    Conv2D(64, (3, 3), activation='relu'),
+    MaxPooling2D((2, 2)),
+    Flatten(),
+    SymbolicReasoningLayer(64),  # Adjust the number of units based on your requirements
+    Activation('relu'),
+    Dense(1, activation='sigmoid')
+])
+
+# Compile the model
+model.compile(optimizer='adam',
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+
+# Train the model
+epochs = 10
+history = model.fit(x_train, y_train, epochs=epochs, validation_data=(x_test, y_test))
+
+# Evaluate the model
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print(f"\nTest Loss: {test_loss:.4f}")
+print(f"Test Accuracy: {test_acc:.4f}")
+
+# Print symbolic reasoning weights and biases
+symbolic_layer = model.layers[-3]  # Assuming the SymbolicReasoningLayer is the 3rd last layer
+symbolic_weights = symbolic_layer.get_weights()
+
+if symbolic_weights:
+    print("\nSymbolic Reasoning Weights:")
+    print(symbolic_weights[0])
+    print("\nSymbolic Reasoning Biases:")
+    print(symbolic_weights[1])
+else:
+    print("\nSymbolic Reasoning layer has no weights.")
+
+# Predict on test data
+y_pred = model.predict(x_test)
+y_pred_classes = np.round(y_pred)
+
+# Calculate Precision, Recall, and Confusion Matrix
+precision = precision_score(y_test, y_pred_classes)
+recall = recall_score(y_test, y_pred_classes)
+conf_matrix = confusion_matrix(y_test, y_pred_classes)
+
+print(f'Precision: {precision:.4f}')
+print(f'Recall: {recall:.4f}')
+print('Confusion Matrix:')
+print(conf_matrix)
+#Symbolic and CNN
+
+import os
+import cv2
+import numpy as np
+from PIL import Image
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix
+import tensorflow as tf
+from tensorflow.keras import layers
+from tensorflow.keras.models import Sequential
+
+# Define a custom symbolic reasoning layer
+class SymbolicReasoningLayer(tf.keras.layers.Layer):
+    def __init__(self, num_classes):
+        super(SymbolicReasoningLayer, self).__init__()
+        self.num_classes = num_classes
+
+    def build(self, input_shape):
+        # Define your symbolic reasoning weights and biases
+        self.weights_symbolic = self.add_weight(shape=(input_shape[-1], self.num_classes),
+                                                initializer='random_normal',
+                                                trainable=True,
+                                                name='weights_symbolic')
+        self.bias_symbolic = self.add_weight(shape=(self.num_classes,),
+                                             initializer='zeros',
+                                             trainable=True,
+                                             name='bias_symbolic')
+
+    def call(self, inputs):
+        # Perform symbolic reasoning
+        reasoning_output = tf.matmul(inputs, self.weights_symbolic) + self.bias_symbolic
+        return reasoning_output
+
+# Define the CNN with symbolic reasoning using the create_model function
+def create_model(input_shape, num_classes):
+    model = Sequential([
+        layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape),
+        layers.MaxPooling2D((2, 2)),
+        layers.Conv2D(64, (3, 3), activation='relu'),
+        layers.MaxPooling2D((2, 2)),
+        layers.Flatten(),
+        SymbolicReasoningLayer(num_classes),
+        layers.Activation('linear'),  # Use 'linear' activation for symbolic reasoning layer
+        layers.Dense(1, activation='sigmoid')
+    ])
+    return model
+
+# Load your dataset and preprocess it
+# For example, you can use the CIFAR-10 dataset
+image_dir = '"C:\Users\91998\Downloads\archive (6)"'
+no_tumor_images = os.listdir(os.path.join(image_dir, 'no'))
+yes_tumor_images = os.listdir(os.path.join(image_dir, 'yes'))
+
+print('The length of no tumor images is', len(no_tumor_images))
+print('The length of yes tumor images is', len(yes_tumor_images))
+
+dataset = []
+label = []
+
+# Load 'no' tumor images
+for image_name in no_tumor_images:
+    if image_name.split('.')[-1] == 'jpg':
+        image_path = os.path.join(image_dir, 'no', image_name)
+        image = cv2.imread(image_path)
+        image = Image.fromarray(image, 'RGB')
+        image = image.resize((128, 128))
+        dataset.append(np.array(image))
+        label.append(0)
+
+# Load 'yes' tumor images
+for image_name in yes_tumor_images:
+    if image_name.split('.')[-1] == 'jpg':
+        image_path = os.path.join(image_dir, 'yes', image_name)
+        image = cv2.imread(image_path)
+        image = Image.fromarray(image, 'RGB')
+        image = image.resize((128, 128))
+        dataset.append(np.array(image))
+        label.append(1)
+
+dataset = np.array(dataset)
+label = np.array(label)
+
+# Split the dataset
+x_train, x_test, y_train, y_test = train_test_split(dataset, label, test_size=0.2, random_state=0)
+
+# Normalize pixel values to be between 0 and 1
+x_train = x_train / 255.0
+x_test = x_test / 255.0
+
+# Define the model using the create_model function
+input_shape = x_train[0].shape
+num_classes = 64  # Adjust the number of units based on your requirements
+model = create_model(input_shape, num_classes)
+
+# Compile the model
+model.compile(optimizer='adam',
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+
+# Train the model
+epochs = 10
+model.fit(x_train, y_train, epochs=epochs)
+
+# Evaluate the model
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print(f"\nTest Loss: {test_loss:.4f}")
+print(f"Test Accuracy: {test_acc:.4f}")
+
+# Predict on test data
+y_pred = model.predict(x_test)
+y_pred_classes = np.round(y_pred)
+
+# Calculate Precision, Recall, and Confusion Matrix
+precision = precision_score(y_test, y_pred_classes)
+recall = recall_score(y_test, y_pred_classes)
+conf_matrix = confusion_matrix(y_test, y_pred_classes)
+
+print(f'Precision: {precision:.4f}')
+print(f'Recall: {recall:.4f}')
+print('Confusion Matrix:')
+print(conf_matrix)
+
+# Print symbolic reasoning weights and biases
+symbolic_layer = model.layers[-3]  # Assuming the symbolic reasoning layer is the third-to-last layer
+symbolic_weights = symbolic_layer.get_weights()
+
+if symbolic_weights:
+    print("\nSymbolic Reasoning Weights:")
+    print(symbolic_weights[0])
+    print("\nSymbolic Reasoning Biases:")
+    print(symbolic_weights[1])
+else:
+    print("\nSymbolic reasoning layer has no trainable parameters.")
